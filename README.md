@@ -1,89 +1,67 @@
-****📊 Data Analysis Project – Zomato Dataset
-****
-**📌 Table of Contents**
+# Zomato Restaurant EDA — 9,551 restaurants across 15 countries
 
-- Overview
-- Dataset
-- Technologies Used
-- Analysis Workflow
-- Key Insights
-- Screenshots
-- How to Run
-- Future Work
-- Project Repository
-- Author
+Exploratory analysis of the Zomato restaurant dataset: where supply concentrates, how ratings behave, and why the rating column is the least trustworthy field in the file.
 
-**📌 Overview
-**This project explores the Zomato Dataset to uncover insights about restaurants, countries, ratings, online delivery, and city-level trends.
-The analysis was performed in Kaggle Notebook using Python and popular data analysis libraries.
+`Python` · `pandas` · `matplotlib` / `seaborn` · 9,551 rows × 21 columns · two notebooks
 
-[🔗 GitHub Repo Link]([url](https://github.com/abir2022/Data-Analysis-Project-Zomatodataset/tree/main))
+---
 
-**📂 Dataset
-**1. zomato.csv – Restaurant-level information
-2. Country-Code.xlsx – Maps Country Code to country names
-✅ Both datasets were merged for full analysis.
+## The question
 
-**🛠️ Technologies Used
-**1. Python (3.8+)
-2. pandas, numpy, matplotlib, seaborn
-3. Kaggle Notebook environment
+A delivery marketplace lives or dies on supply density and rating quality. This analysis asks:
 
-**🔎 Analysis Workflow
-**1. Data Import & Cleaning
-2. Exploratory Data Analysis (EDA)
-3. Country-wise restaurant distribution
-4. Ratings analysis (aggregate rating, rating color, rating text)
-5. Online delivery trends across countries
-6. City-wise restaurant insights
-7. Currency mapping
+> **Where is restaurant supply concentrated, how is quality distributed — and which parts of this dataset can a decision actually be built on?**
 
-**📊 Key Insights
-**1. The majority of restaurants are in India
-2. Rating color provides quick quality insights
-3. Online delivery is only available in a few countries
-4. Top cities dominate the restaurant dataset
-5. Country-specific currencies mapped
+## Headline findings
 
-**🖼️ Screenshots
-**
-Here are some sample outputs from the analysis:
+| # | Finding | Evidence |
+|---|---|---|
+| 1 | **9,551 restaurants, 21 fields, 9 missing cuisines** | `Cuisines` is the only incomplete column (0.09% null); everything else is complete |
+| 2 | **22.5% of listings have no rating at all** | 2,148 restaurants carry `Aggregate rating = 0.0` and `Rating text = Not rated` |
+| 3 | **Those unrated listings are almost entirely one country** | 2,139 of the 2,148 sit in India — the missingness is structural, not random |
+| 4 | **Ratings cluster in the middle** | Most rated restaurants sit in the 2.5–3.4 band; "Excellent" (4.5+) is rare |
+| 5 | **Supply is heavily concentrated** | India dominates the listing count by a wide margin, followed by the US and UK |
 
-🔹 Missing Values Heatmap 
-<img width="515" height="548" alt="image" src="https://github.com/user-attachments/assets/29c6e1ea-8666-4b78-a692-7425a74d0da0" />
+Finding 3 is the one worth acting on. If a country's listings are ~22% unrated, an "average rating by country" comparison silently drops its newest or worst-served supply and flatters the result. That is how a dashboard ends up lying while every number in it is technically correct.
 
-🔹 Top 3 Countries by Restaurant Count
-<img width="488" height="389" alt="image" src="https://github.com/user-attachments/assets/1cc588be-14a3-4519-83c5-bb6035b7f713" />
+## Method
 
-🔹 Ratings Count by Aggregate Rating
-<img width="1014" height="525" alt="image" src="https://github.com/user-attachments/assets/12fd9d96-51af-4f9a-96b9-b5a3849bba48" />
+1. **Load and join** — merged `zomato.csv` with `Country-Code.xlsx` to resolve numeric country codes into country names.
+2. **Profile** — shape, dtypes, null counts; isolated `Cuisines` as the only incomplete column.
+3. **Categorical pass** — country, city and rating-text distributions.
+4. **Numeric pass** — aggregate rating and rating-count distributions.
+5. **Relationship pass** — rating against rating count, rating against country, and the "not rated" population broken out separately instead of averaged in.
 
-🔹 Rating Color Distribution
-<img width="996" height="525" alt="image" src="https://github.com/user-attachments/assets/95f2a5d6-4990-4f40-a34e-fec45adcf199" />
+## Charts
 
-🔹 Top 5 Cities by Restaurants
-<img width="528" height="482" alt="image" src="https://github.com/user-attachments/assets/8fd6bcf6-a6a6-47f5-9637-13b7cdeba227" />
+Missing-values heatmap, top countries by restaurant count, rating counts by aggregate rating, rating-colour distribution, top cities.
 
-**🚀 How to Run
-**
-# Clone repo
-git clone https://github.com/abir2022/Data-Analysis-Project-Zomatodataset.git
-cd Data-Analysis-Project-Zomatodataset
-# Install dependencies
-pip install pandas numpy matplotlib seaborn
-Then open in Jupyter Notebook or Kaggle and run step by step.
+## Files
 
-**🔮 Future Work
-**1. Sentiment analysis of reviews (if available)
-2. ML models for rating prediction
-3. Interactive dashboards (Plotly/Dash/Power BI)
+```
+notebooks/01_eda_and_feature_engineering.ipynb   profiling, joins, EDA
+notebooks/02_zomato_refined_dataset.ipynb        cleaned / refined dataset
+```
 
-**📁 Project Repository
-**
-[🔗 GitHub Repo Link]([url](https://github.com/abir2022/Data-Analysis-Project-Zomatodataset/tree/main))
+The raw `zomato.csv` (~500 MB unzipped on Kaggle) is not committed; the notebooks document every join and derived column.
 
-**👤 Author
-**Md. Abir Ul Islam
-📍 Bangladesh
-[🔗 GitHub]([url](https://github.com/abir2022))
-🎓 Data Enthusiast | Aspiring Machine Learning Expert
+## Run it
+
+```bash
+pip install pandas numpy matplotlib seaborn openpyxl
+jupyter notebook notebooks/01_eda_and_feature_engineering.ipynb
+```
+
+## Limitations
+
+- Ratings are user-generated and vendor-influenced; nothing in this file can verify them.
+- `Average Cost for two` is in each country's local currency, so it is **not** comparable across countries without an FX join — a mistake this dataset invites.
+- These are listings, not transactions: nothing here says whether a restaurant is still trading.
+
+## Next
+
+Predict the rating band from city, cuisine and price features — and quantify how much a per-country "best restaurants" ranking changes once unrated listings are excluded.
+
+---
+
+**Md. Abir Ul Islam** · [GitHub](https://github.com/abir2022) · [LinkedIn](https://www.linkedin.com/in/md-abir-ul-islam/)
