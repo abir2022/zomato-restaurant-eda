@@ -1,3 +1,5 @@
+![Zomato Restaurant EDA](assets/banner.svg)
+
 # Zomato Restaurant EDA — 9,551 restaurants across 15 countries
 
 Exploratory analysis of the Zomato restaurant dataset: where supply concentrates, how ratings behave, and why the rating column is the least trustworthy field in the file.
